@@ -62,7 +62,6 @@ void update_tree( int node, int a, int b, int i, int j,ll newValue)
         }
         lazy[node]=0; //Reset it
     }
-
     if( a > b || a > j || b < i )
         return ; //current segment is not within range
     if( a>=i && b <=j )
@@ -117,4 +116,3 @@ int main()
     return 0;
 }
 //http://lightoj.com/volume_showproblem.php?problem=1164
-
