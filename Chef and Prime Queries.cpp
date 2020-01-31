@@ -11,26 +11,23 @@ vector<pii>tree[3*MX+1],vec[1000006];
 bool mark[1000006];
 vector<int>prime,sum[3*MX+1];
 
-void sieve(ll x)
+vector<pii> factorize(int x)
 {
-    ll i,j;
-    mark[1] = 1;
-    for(ll i =4; i<=x; i=i+2)
-        mark[i]=1;
-    for(i=3; i*i<=x; i+=2)
-    {
-        if(!mark[i])
+    vector<pii>v;
+    for(int i=2; i*i<=x; i++)
+        if(x%i==0)
         {
-            for(j=i*i; j<=x; j+=2*i)
-                mark[j]=1;
+            int cnt = 0 ;
+            while(x%i==0)
+            {
+                x/=i;
+                cnt++;
+            }
+            v.emplace_back(pii(i,cnt));
         }
-    }
-    prime.emplace_back(2);
-    for(i=3; i<=x; i+=2)
-    {
-        if(mark[i]==0)
-            prime.emplace_back(i);
-    }
+    if(x>1)
+        v.emplace_back(pii(x,1));
+    return v;
 }
 
 struct comp_pair_int
@@ -81,9 +78,7 @@ void built_tree( ll node, ll a, ll b )
 {
     if( a == b )
     {
-        for( int j = 0 ; j < vec[ara[a]].size() ; j++){
-            tree[node].emplace_back(vec[ara[a]][j]) ;
-        }
+        tree[node]=factorize(ara[a]);
         sum[node].emplace_back(tree[node][0].second);
         for( int j = 1 ; j < tree[node].size() ; j++){
             sum[node].emplace_back(tree[node][j].second+sum[node].back()) ;
@@ -125,39 +120,13 @@ ll query_tree( ll node, ll a, ll b, ll i, ll j,ll start, ll endd)
 }
 
 
-
 int main()
 {
-    sieve(1000000);
     int i, n, j,inp,a,b,L,R,X,Y,m,k,q;
-
-    for( i = 0 ; i < prime.size() ; i++ )
-    {
-        int x = prime[i];
-        while( x <= 1000000 )
-        {
-            vec[x].emplace_back(pii(prime[i],0));
-            x += prime[i] ;
-        }
-    }
-
     scanf("%d", &n) ;
     for( i = 1 ; i <= n ; i++ )
     {
         scanf("%d",&ara[i]);
-
-        for( j = 0 ; j < vec[ara[i]].size() ; j++ )
-        {
-            int x = ara[i];
-            int y = vec[ara[i]][j].first;
-            ll cnt = 0 ;
-            while( x % y == 0)
-            {
-                cnt++;
-                x /= y ;
-            }
-            vec[ara[i]][j].second=cnt;
-        }
     }
     scanf("%d",&q);
     built_tree( 1, 1, n ) ;
